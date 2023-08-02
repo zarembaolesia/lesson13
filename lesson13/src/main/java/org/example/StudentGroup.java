@@ -9,7 +9,7 @@ public class StudentGroup implements IHeadOfTheClass{
     private Student headOfTheClass;
     private List<Student> students;
     private List<String> tasks;
-    private Map<Student, Map<String, Boolean>> completedTasksMap;
+    private Map<String, List<Student>> completedTasksMap;
 
     public StudentGroup(Student headOfTheClass) {
         this.headOfTheClass = headOfTheClass;
@@ -21,35 +21,38 @@ public class StudentGroup implements IHeadOfTheClass{
 
     public Student addStudent(Student student) {
         students.add(student);
-        completedTasksMap.put(student, new HashMap<>());
         return student;
     }
 
     public void deleteStudent(Student student) {
-        students.remove(student);
-        completedTasksMap.remove(student);
+        if (student == headOfTheClass){
+            System.out.println("You can`t remove " + student.getFirstName() +" "+student.getLastName() +", because they are head of the class. Change the head of the class first.");
+            System.out.println("---------------------");
+        } else {
+            students.remove(student);
+            completedTasksMap.remove(student);
+        }
     }
 
     public void addTask(String task) {
         tasks.add(task);
+        completedTasksMap.put(task, new ArrayList<>());
     }
 
     public void markTaskAsCompleted(Student student, String title) {
         if (tasks.contains(title)) {
-            Map<String, Boolean> completedTasks = completedTasksMap.get(student);
-            completedTasks.put(title, true);
+            List<Student> completedStudents = completedTasksMap.get(title);
+            if (!completedStudents.contains(student)) {
+                completedStudents.add(student);
+            }
         }
     }
+
     public List<String> getCompletedTasks(Student student) {
         List<String> completedTasksList = new ArrayList<>();
 
-        Map<String, Boolean> completedTasks = completedTasksMap.get(student);
-        if (completedTasks == null) {
-            return completedTasksList;
-        }
-
-        for (Map.Entry<String, Boolean> entry : completedTasks.entrySet()) {
-            if (entry.getValue()) {
+        for (Map.Entry<String, List<Student>> entry : completedTasksMap.entrySet()) {
+            if (entry.getValue().contains(student)) {
                 completedTasksList.add(entry.getKey());
             }
         }
@@ -59,9 +62,14 @@ public class StudentGroup implements IHeadOfTheClass{
 
     @Override
     public Student changeHeadOfTheClass(Student student) {
+        if (!students.contains(student)) {
+            students.add(student);
+        }
+        headOfTheClass = student;
         return headOfTheClass;
     }
+
     public List<Student> getStudents() {
-        return students;
+        return new ArrayList<>(students);
     }
 }
