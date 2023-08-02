@@ -12,12 +12,12 @@ public class Main {
         group1.addStudent(student3);
         group1.addTask("learn encapsulation");
         group1.changeHeadOfTheClass(student4);
-        group1.addStudent(student4);
         group1.markTaskAsCompleted(student1, "learn encapsulation");
         group1.markTaskAsCompleted(student1, "learn encapsulation");
         group1.markTaskAsCompleted(student4, "learn encapsulation");
         group1.markTaskAsCompleted(student2, "fake task");
         group1.deleteStudent(student3);
+        group1.deleteStudent(student4);
 
         for (Student student : group1.getStudents()) {
             System.out.println("Student ID: " + student.getStudentId());
